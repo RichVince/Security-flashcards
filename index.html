@@ -2,30 +2,121 @@
 <h2 class="sr-only">Complete Security+ SY0-701 interactive flashcard deck. 563 cards across 14 domains. Click a card to flip it and reveal the answer. Use Got it or Missed to track your score. Filter by domain using the dropdown.</h2>
 
 <style>
-.fc-shell{padding:1rem 0}
+:root{
+  --bg:#05070d;
+  --surface-1:#0d1117;
+  --surface-2:#161b22;
+  --surface-3:#21262d;
+  --border:#30363d;
+  --border-strong:#3d444d;
+  --text-primary:#f0f6fc;
+  --text-secondary:#c9d1d9;
+  --text-muted:#8b949e;
+  --text-success:#3fb950;
+  --text-danger:#f85149;
+  --text-warning:#d29922;
+  --accent:#58a6ff;
+  --radius:12px;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at top left, rgba(88,166,255,.13), transparent 28rem),
+    linear-gradient(180deg,#05070d 0%,#0d1117 45%,#05070d 100%);
+  color:var(--text-primary);
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+body{
+  padding:24px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.fc-shell{
+  max-width:1000px;
+  margin:0 auto;
+  padding:1.25rem;
+  background:rgba(13,17,23,.86);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 24px 80px rgba(0,0,0,.45);
+}
+
 .fc-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+
+select,
+button{
+  background:var(--surface-3);
+  color:var(--text-primary);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+select{
+  min-width:230px;
+}
+
+button:hover,
+select:hover{
+  border-color:var(--accent);
+  background:#263142;
+}
+
+button:active{
+  transform:translateY(1px);
+}
+
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
-.stat-box{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px}
-.stat-val{display:block;font-size:22px;font-weight:500;color:var(--text-primary);line-height:1.2}
+.stat-box{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.stat-val{display:block;font-size:22px;font-weight:600;color:var(--text-primary);line-height:1.2}
 .stat-lbl{font-size:12px;color:var(--text-muted)}
-.stage{perspective:1000px;height:180px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
+.stage{perspective:1000px;height:220px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
 .card-inner{position:relative;width:100%;height:100%;transition:transform .42s ease;transform-style:preserve-3d}
 .card-inner.flipped{transform:rotateY(180deg)}
-.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;text-align:center;gap:6px;background:var(--surface-2)}
-.card-face.back{transform:rotateY(180deg);background:var(--surface-1)}
-.card-dom{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
-.card-q{font-size:18px;font-weight:500;color:var(--text-primary);line-height:1.35}
-.card-a{font-size:16px;color:var(--text-primary);line-height:1.5}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;gap:8px;background:linear-gradient(145deg,#161b22,#0d1117)}
+.card-face.back{transform:rotateY(180deg);background:linear-gradient(145deg,#0f1724,#161b22)}
+.card-dom{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.09em}
+.card-q{font-size:20px;font-weight:600;color:var(--text-primary);line-height:1.35}
+.card-a{font-size:17px;color:var(--text-primary);line-height:1.5}
 .card-hint{font-size:12px;color:var(--text-muted)}
 .grade-row{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
 .nav-row{display:flex;align-items:center;gap:8px}
-.prog-wrap{flex:1;height:3px;background:var(--border-strong);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;background:var(--text-primary);border-radius:99px;transition:width .3s}
+.prog-wrap{flex:1;height:5px;background:var(--border-strong);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--text-success));border-radius:99px;transition:width .3s}
 .pos-lbl{font-size:13px;color:var(--text-secondary);min-width:52px;text-align:right}
-.result-box{border:0.5px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;margin-top:4px}
-.result-score{font-size:44px;font-weight:500;margin:.5rem 0}
+.result-box{border:1px solid var(--border);background:var(--surface-1);border-radius:12px;padding:1.5rem;text-align:center;margin-top:4px}
+.result-score{font-size:44px;font-weight:600;margin:.5rem 0}
 .result-msg{font-size:14px;color:var(--text-secondary);margin-bottom:1rem}
 .result-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+@media(max-width:700px){
+  body{padding:12px}
+  .fc-shell{padding:1rem}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stage{height:260px}
+  select{width:100%}
+}
 </style>
 
 <div class="fc-shell">

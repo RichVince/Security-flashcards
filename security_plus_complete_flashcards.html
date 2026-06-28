@@ -1,0 +1,755 @@
+
+<h2 class="sr-only">Complete Security+ SY0-701 interactive flashcard deck. 563 cards across 14 domains. Click a card to flip it and reveal the answer. Use Got it or Missed to track your score. Filter by domain using the dropdown.</h2>
+
+<style>
+.fc-shell{padding:1rem 0}
+.fc-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.stat-box{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px}
+.stat-val{display:block;font-size:22px;font-weight:500;color:var(--text-primary);line-height:1.2}
+.stat-lbl{font-size:12px;color:var(--text-muted)}
+.stage{perspective:1000px;height:180px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
+.card-inner{position:relative;width:100%;height:100%;transition:transform .42s ease;transform-style:preserve-3d}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;text-align:center;gap:6px;background:var(--surface-2)}
+.card-face.back{transform:rotateY(180deg);background:var(--surface-1)}
+.card-dom{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+.card-q{font-size:18px;font-weight:500;color:var(--text-primary);line-height:1.35}
+.card-a{font-size:16px;color:var(--text-primary);line-height:1.5}
+.card-hint{font-size:12px;color:var(--text-muted)}
+.grade-row{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.nav-row{display:flex;align-items:center;gap:8px}
+.prog-wrap{flex:1;height:3px;background:var(--border-strong);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--text-primary);border-radius:99px;transition:width .3s}
+.pos-lbl{font-size:13px;color:var(--text-secondary);min-width:52px;text-align:right}
+.result-box{border:0.5px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;margin-top:4px}
+.result-score{font-size:44px;font-weight:500;margin:.5rem 0}
+.result-msg{font-size:14px;color:var(--text-secondary);margin-bottom:1rem}
+.result-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+</style>
+
+<div class="fc-shell">
+  <div class="fc-top">
+    <select id="dom-sel" onchange="changeDomain()" aria-label="Filter by domain">
+      <option value="all">All domains (563)</option>
+      <option value="Cryptography">Cryptography (61)</option>
+      <option value="Malware & Attacks">Malware &amp; Attacks (59)</option>
+      <option value="Social Engineering">Social Engineering (37)</option>
+      <option value="Policies & Governance">Policies &amp; Governance (26)</option>
+      <option value="Incident Response">Incident Response (44)</option>
+      <option value="Network Security">Network Security (58)</option>
+      <option value="Wireless & Mobile">Wireless &amp; Mobile (38)</option>
+      <option value="Cloud & Virtualization">Cloud &amp; Virtualization (37)</option>
+      <option value="Application Security">Application Security (29)</option>
+      <option value="Linux & Windows CLI">Linux &amp; Windows CLI (28)</option>
+      <option value="Disaster Recovery">Disaster Recovery (35)</option>
+      <option value="Data Protection">Data Protection (30)</option>
+      <option value="Identity & Access">Identity &amp; Access (41)</option>
+      <option value="Ports & Protocols">Ports &amp; Protocols (53)</option>
+    </select>
+    <button onclick="doShuffle()" aria-label="Shuffle"><i class="ti ti-refresh" aria-hidden="true"></i> Shuffle</button>
+    <button id="btn-missed" style="display:none" onclick="drillMissed()"><i class="ti ti-target" aria-hidden="true"></i> Drill missed (<span id="missed-n">0</span>)</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-val" id="s-total">0</span><span class="stat-lbl">Cards</span></div>
+    <div class="stat-box"><span class="stat-val" id="s-got" style="color:var(--text-success)">0</span><span class="stat-lbl">Got it</span></div>
+    <div class="stat-box"><span class="stat-val" id="s-miss" style="color:var(--text-danger)">0</span><span class="stat-lbl">Missed</span></div>
+    <div class="stat-box"><span class="stat-val" id="s-left" style="color:var(--text-warning)">0</span><span class="stat-lbl">Remaining</span></div>
+  </div>
+
+  <div class="stage" id="stage" onclick="flip()" role="button" tabindex="0" aria-label="Flashcard — click to flip" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flip()}">
+    <div class="card-inner" id="card-inner">
+      <div class="card-face front">
+        <div class="card-dom" id="cd-front"></div>
+        <div class="card-q" id="card-q"></div>
+        <div class="card-hint">Click to reveal answer</div>
+      </div>
+      <div class="card-face back">
+        <div class="card-dom" id="cd-back"></div>
+        <div class="card-a" id="card-a"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grade-row" id="grade-row" style="visibility:hidden">
+    <button onclick="grade(false)"><i class="ti ti-x" aria-hidden="true"></i> Missed</button>
+    <button onclick="grade(true)"><i class="ti ti-check" aria-hidden="true"></i> Got it</button>
+  </div>
+
+  <div class="nav-row">
+    <button onclick="prev()" aria-label="Previous card"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <div class="pos-lbl" id="pos">1 / 1</div>
+    <button onclick="next()" aria-label="Next card"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+
+  <div class="result-box" id="result-box" style="display:none">
+    <div style="font-size:14px;color:var(--text-secondary)">Session complete</div>
+    <div class="result-score" id="r-score"></div>
+    <div class="result-msg" id="r-msg"></div>
+    <div class="result-btns">
+      <button id="r-drill" style="display:none" onclick="drillMissed()"><i class="ti ti-target" aria-hidden="true"></i> Drill missed</button>
+      <button onclick="restart()"><i class="ti ti-refresh" aria-hidden="true"></i> Restart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const D = [
+["Cryptography","What is symmetric encryption?","One shared key encrypts and decrypts data."],
+["Cryptography","What is asymmetric encryption?","Uses a public/private key pair."],
+["Cryptography","What is AES?","A strong symmetric encryption algorithm."],
+["Cryptography","What is RSA?","An asymmetric encryption algorithm."],
+["Cryptography","What is ECC?","Asymmetric cryptography using elliptic curves."],
+["Cryptography","What is Diffie-Hellman used for?","Secure key exchange."],
+["Cryptography","What is ECDHE?","Ephemeral elliptic curve Diffie-Hellman key exchange."],
+["Cryptography","What are ephemeral keys?","Temporary session keys used briefly and discarded."],
+["Cryptography","What is perfect forward secrecy?","Past sessions remain secure even if a long-term key is compromised."],
+["Cryptography","What is a session key?","Temporary symmetric key used during a session."],
+["Cryptography","What is hashing?","One-way function used to verify integrity."],
+["Cryptography","What is a checksum?","Small value used to detect accidental changes or errors."],
+["Cryptography","Hash vs checksum?","Hashes are stronger for integrity/security; checksums detect errors."],
+["Cryptography","What is salting?","Adding random data before hashing passwords."],
+["Cryptography","What does salting prevent?","Rainbow table attacks."],
+["Cryptography","What is HMAC?","Hash-based message authentication code using a secret key."],
+["Cryptography","What does HMAC provide?","Integrity and authentication."],
+["Cryptography","What is MD5?","Weak/deprecated hashing algorithm."],
+["Cryptography","What is SHA-1?","Deprecated hashing algorithm."],
+["Cryptography","What is SHA-256?","Strong SHA-2 hashing algorithm."],
+["Cryptography","What is encryption used for?","Confidentiality."],
+["Cryptography","What is hashing used for?","Integrity."],
+["Cryptography","What is a digital signature used for?","Integrity, authentication, and non-repudiation."],
+["Cryptography","Which key signs a digital signature?","Sender's private key."],
+["Cryptography","Which key verifies a digital signature?","Sender's public key."],
+["Cryptography","Which key encrypts data for confidentiality?","Recipient's public key."],
+["Cryptography","Which key decrypts asymmetric data?","Recipient's private key."],
+["Cryptography","What is code signing?","Signing a hash of software with the developer's private key."],
+["Cryptography","Output of code signing?","A signed hash of the software."],
+["Cryptography","Does a digital signature encrypt the whole file?","No — it signs the hash."],
+["Cryptography","What is PKI?","Public key infrastructure for managing certificates and keys."],
+["Cryptography","What is a digital certificate?","A document binding a public key to an identity."],
+["Cryptography","What is a CA?","Certificate Authority that issues certificates."],
+["Cryptography","What is a Root CA?","Top-level trusted certificate authority."],
+["Cryptography","What is an Intermediate CA?","CA trusted by the Root CA to issue certificates."],
+["Cryptography","What is a CSR?","Certificate Signing Request."],
+["Cryptography","What is OCSP?","Real-time certificate revocation checking."],
+["Cryptography","What is a CRL?","Certificate Revocation List."],
+["Cryptography","What is certificate pinning?","Trusting only a specific certificate or public key."],
+["Cryptography","What is a wildcard certificate?","Certificate that covers first-level subdomains."],
+["Cryptography","What does *.example.com cover?","www.example.com, mail.example.com."],
+["Cryptography","What does *.example.com NOT cover?","test.mail.example.com."],
+["Cryptography","What is a SAN certificate?","Certificate supporting multiple domain names."],
+["Cryptography","What is DV validation?","Domain ownership validation."],
+["Cryptography","What is OV validation?","Organization validation."],
+["Cryptography","What is EV validation?","Extended validation with stricter checks."],
+["Cryptography","What is TPM?","Trusted Platform Module — hardware root of trust and secure key storage."],
+["Cryptography","What is HSM?","Hardware Security Module for enterprise cryptographic key protection."],
+["Cryptography","TPM vs HSM?","TPM protects individual device keys; HSM protects enterprise/server keys."],
+["Cryptography","What is secure boot?","Verifies boot components before loading them."],
+["Cryptography","What is measured boot?","Measures boot components for later verification."],
+["Cryptography","What is boot attestation?","Reports boot trustworthiness to a verification system after boot."],
+["Cryptography","What is BitLocker tied to?","TPM and full-disk encryption."],
+["Cryptography","When is full-disk encryption strongest?","When the device is powered off."],
+["Cryptography","What is key escrow?","Storing encryption keys with a trusted third party."],
+["Cryptography","What is key stretching?","Strengthening weak passwords before hashing."],
+["Cryptography","What is PBKDF2?","Key stretching algorithm."],
+["Cryptography","What is bcrypt?","Password hashing/key stretching algorithm."],
+["Cryptography","What is quantum computing a threat to?","Some asymmetric cryptography like RSA and ECC."],
+["Cryptography","What is homomorphic encryption?","Allows computation on encrypted data."],
+["Cryptography","What is blockchain?","Distributed immutable ledger."],
+["Malware & Attacks","What is a virus?","Malware that requires user interaction to spread."],
+["Malware & Attacks","What is a worm?","Malware that self-spreads across networks."],
+["Malware & Attacks","What is a Trojan?","Malware disguised as legitimate software."],
+["Malware & Attacks","What is ransomware?","Malware that encrypts or denies access and demands payment."],
+["Malware & Attacks","What is cryptomalware?","Malware that encrypts files for extortion."],
+["Malware & Attacks","What is spyware?","Malware that secretly collects user/system information."],
+["Malware & Attacks","What is a keylogger?","Malware that records keystrokes or user input."],
+["Malware & Attacks","What is a rootkit?","Malware that hides itself and maintains privileged access."],
+["Malware & Attacks","What is a logic bomb?","Malware triggered by a specific event or condition."],
+["Malware & Attacks","What is a backdoor?","Hidden method for remote access."],
+["Malware & Attacks","What is a RAT?","Remote Access Trojan."],
+["Malware & Attacks","What is a bot?","Compromised system controlled by command and control."],
+["Malware & Attacks","What is a botnet?","Network of compromised bots."],
+["Malware & Attacks","What is fileless malware?","Malware that runs in memory without traditional files."],
+["Malware & Attacks","What is bloatware?","Unwanted preinstalled software that consumes resources."],
+["Malware & Attacks","What is adware?","Software that displays unwanted ads."],
+["Malware & Attacks","What is C2?","Command and control communication."],
+["Malware & Attacks","What does TCP 6667 often indicate?","IRC-based command and control."],
+["Malware & Attacks","What is an IoC?","Indicator of Compromise."],
+["Malware & Attacks","Examples of IoCs?","File hashes, malicious IPs, domains, registry keys."],
+["Malware & Attacks","What is an IoA?","Indicator of Attack showing attacker behavior."],
+["Malware & Attacks","What is TTP?","Tactics, techniques, and procedures."],
+["Malware & Attacks","What is MITRE ATT&CK?","Framework mapping adversary behaviors and techniques."],
+["Malware & Attacks","What is a zero-day?","Vulnerability unknown to vendor or without patch."],
+["Malware & Attacks","Who most likely uses zero-days?","Nation-state actors."],
+["Malware & Attacks","What is privilege escalation?","Gaining higher-level permissions."],
+["Malware & Attacks","What is lateral movement?","Moving from one system to another inside a network."],
+["Malware & Attacks","What is persistence?","Maintaining access after compromise."],
+["Malware & Attacks","What is pivoting?","Using one compromised system to attack others."],
+["Malware & Attacks","What is exfiltration?","Unauthorized data removal."],
+["Malware & Attacks","What is an on-path attack?","Attacker intercepts and possibly modifies traffic."],
+["Malware & Attacks","What is ARP spoofing?","Sending false ARP replies to redirect traffic."],
+["Malware & Attacks","What is DNS poisoning?","Corrupting DNS cache to redirect users."],
+["Malware & Attacks","What is SSL/TLS stripping?","Downgrading HTTPS to HTTP using an on-path attack."],
+["Malware & Attacks","What is a disassociation attack?","Forcing Wi-Fi clients to disconnect."],
+["Malware & Attacks","What is evil twin?","Rogue AP pretending to be legitimate."],
+["Malware & Attacks","What is a rogue AP?","Unauthorized wireless access point."],
+["Malware & Attacks","What is a deauth attack?","Wireless attack disconnecting clients from AP."],
+["Malware & Attacks","What is SQL injection?","Injecting SQL commands into application input."],
+["Malware & Attacks","What is XSS?","Injecting scripts into web pages viewed by users."],
+["Malware & Attacks","What is CSRF/XSRF?","Forcing a logged-in user's browser to perform unwanted actions."],
+["Malware & Attacks","What is SSRF?","Tricking a server into making unauthorized requests."],
+["Malware & Attacks","What is LDAP injection?","Injecting LDAP queries through unsafe input."],
+["Malware & Attacks","What is XML injection?","Injecting malicious XML input."],
+["Malware & Attacks","What is command injection?","Injecting OS commands through vulnerable input."],
+["Malware & Attacks","What is directory traversal?","Accessing files outside intended directories."],
+["Malware & Attacks","What is buffer overflow?","Writing beyond memory buffer boundaries."],
+["Malware & Attacks","What is integer overflow?","Numeric value exceeds storage limit."],
+["Malware & Attacks","What is TOCTOU?","Time-of-check to time-of-use race condition."],
+["Malware & Attacks","What is a race condition?","Flaw caused by timing between operations."],
+["Malware & Attacks","What is session hijacking?","Taking over a valid user session."],
+["Malware & Attacks","What is a replay attack?","Reusing captured authentication/session data."],
+["Malware & Attacks","What is pass-the-hash?","Using captured password hash to authenticate."],
+["Malware & Attacks","What is brute force?","Trying many passwords."],
+["Malware & Attacks","What is a dictionary attack?","Trying common words/password variations."],
+["Malware & Attacks","What is password spraying?","Trying one or few passwords across many accounts."],
+["Malware & Attacks","What is credential stuffing?","Using breached credentials on other sites."],
+["Malware & Attacks","What is a rainbow table attack?","Using precomputed hashes to crack passwords."],
+["Social Engineering","What is phishing?","Fraudulent message (usually email) to steal data or credentials."],
+["Social Engineering","What is spear phishing?","Targeted phishing against a specific person or group."],
+["Social Engineering","What is whaling?","Phishing targeting executives or high-value people."],
+["Social Engineering","What is smishing?","Phishing through SMS/text message."],
+["Social Engineering","What is vishing?","Phishing through voice call or voicemail."],
+["Social Engineering","What is pretexting?","Using a fake story to gain trust or information."],
+["Social Engineering","What is impersonation?","Pretending to be someone else."],
+["Social Engineering","What is shoulder surfing?","Watching someone enter sensitive information."],
+["Social Engineering","What is dumpster diving?","Searching trash for useful information."],
+["Social Engineering","What is tailgating?","Following someone into a secure area without permission."],
+["Social Engineering","What is piggybacking?","Authorized person knowingly lets someone in."],
+["Social Engineering","What is a watering hole attack?","Compromising a site commonly visited by targets."],
+["Social Engineering","What is typosquatting?","Using lookalike/mistyped domains."],
+["Social Engineering","What is brand impersonation?","Pretending to be a trusted brand."],
+["Social Engineering","What is an invoice scam?","Fake invoice to trick payment."],
+["Social Engineering","What is business email compromise?","Compromising/spoofing business email for fraud."],
+["Social Engineering","What is urgency in SE?","Pressure to act quickly."],
+["Social Engineering","What is authority in SE?","Pretending to have power or official status."],
+["Social Engineering","What is intimidation?","Using fear or threats."],
+["Social Engineering","What is scarcity?","Claiming limited availability/time."],
+["Social Engineering","What is consensus/social proof?","'Everyone else is doing it' — peer pressure manipulation."],
+["Social Engineering","What is familiarity/liking?","Building trust through friendliness or similarity."],
+["Social Engineering","What is trust (SE)?","Exploiting belief in the attacker's honesty."],
+["Social Engineering","What motivates nation-state actors?","Espionage, warfare, political goals."],
+["Social Engineering","What motivates organized crime?","Financial gain."],
+["Social Engineering","What motivates hacktivists?","Political or social ideology."],
+["Social Engineering","What is an insider threat?","Threat from trusted internal user or partner."],
+["Social Engineering","What is a malicious insider?","Insider intentionally causing harm."],
+["Social Engineering","What is an unintentional insider?","Insider causing harm by mistake."],
+["Social Engineering","What is a script kiddie?","Low-skill attacker using existing tools."],
+["Social Engineering","What is an APT?","Advanced persistent threat — often nation-state linked."],
+["Social Engineering","What is shadow IT?","Use of unapproved technology or services."],
+["Social Engineering","What is a supply chain attack?","Attack through vendor, supplier, or third-party dependency."],
+["Social Engineering","What is OSINT?","Open-source intelligence from public sources."],
+["Social Engineering","What is NOT OSINT?","Active port scans against a target."],
+["Social Engineering","What is a threat map?","Visual display of attack/threat locations."],
+["Social Engineering","What is an ISAC?","Industry Information Sharing and Analysis Center."],
+["Policies & Governance","What is a policy?","High-level mandatory statement of management intent."],
+["Policies & Governance","What is a standard?","Specific mandatory requirement supporting a policy."],
+["Policies & Governance","What is a procedure?","Step-by-step instructions."],
+["Policies & Governance","What is a guideline?","Recommended but not mandatory guidance."],
+["Policies & Governance","Policy vs standard?","Policy says what/why; standard gives specific mandatory requirements."],
+["Policies & Governance","Procedure vs guideline?","Procedure is required step-by-step; guideline is recommended advice."],
+["Policies & Governance","What is AUP?","Acceptable Use Policy defining proper use of systems."],
+["Policies & Governance","What is an NDA?","Non-disclosure agreement protecting confidential information."],
+["Policies & Governance","What is an SLA?","Service Level Agreement defining performance metrics."],
+["Policies & Governance","What is an MOU?","Memorandum of Understanding — informal agreement of roles/responsibilities."],
+["Policies & Governance","What is an MOA?","Memorandum of Agreement — formal agreement of responsibilities."],
+["Policies & Governance","What is an MSA?","Master Service Agreement for long-term vendor relationship terms."],
+["Policies & Governance","What is a BPA?","Business Partners Agreement."],
+["Policies & Governance","What agreement covers uptime?","SLA."],
+["Policies & Governance","What agreement covers roles and responsibilities?","MOU/MOA."],
+["Policies & Governance","What document defines specific project work?","SOW."],
+["Policies & Governance","What is an SOW?","Statement of Work defining project tasks/deliverables."],
+["Policies & Governance","What document gives pentest scope/rules?","Rules of Engagement."],
+["Policies & Governance","What document is created after an incident?","Lessons learned report."],
+["Policies & Governance","What is change management policy?","Defines how changes are requested, approved, tested, and reviewed."],
+["Policies & Governance","What is an access control policy?","Defines rules for granting and managing access."],
+["Policies & Governance","What is a data retention policy?","Defines how long data is kept."],
+["Policies & Governance","What is a data disposal policy?","Defines secure destruction of data."],
+["Policies & Governance","What is onboarding?","Adding users and access when they join."],
+["Policies & Governance","What is offboarding?","Removing access when users leave."],
+["Incident Response","What are the IR phases?","Preparation, Detection/Analysis, Containment, Eradication, Recovery, Lessons Learned."],
+["Incident Response","What happens in Preparation?","Build plans, tools, training, and processes."],
+["Incident Response","What happens in Detection?","Identify possible incidents."],
+["Incident Response","What happens in Analysis?","Determine scope, cause, and impact."],
+["Incident Response","What happens in Containment?","Limit damage and prevent spread."],
+["Incident Response","What happens in Eradication?","Remove malware/root cause."],
+["Incident Response","What happens in Recovery?","Restore systems to normal operation."],
+["Incident Response","What happens in Lessons Learned?","Review and improve after incident."],
+["Incident Response","What is quarantine?","Isolating a suspicious or infected system."],
+["Incident Response","What is eradication?","Removing the threat from systems."],
+["Incident Response","What is recovery?","Returning systems to normal operation."],
+["Incident Response","What is a containment strategy?","Plan to limit incident damage."],
+["Incident Response","What is root cause analysis?","Finding the underlying cause of an incident."],
+["Incident Response","What are RCA methods?","Five whys, event analysis, diagramming."],
+["Incident Response","What is NOT a standard RCA method?","Root/branch review."],
+["Incident Response","What is chain of custody?","Documentation of evidence handling."],
+["Incident Response","What is legal hold?","Requirement to preserve relevant evidence/data."],
+["Incident Response","What is EDRM?","Electronic Discovery Reference Model."],
+["Incident Response","What happens in EDRM review?","Validate relevant data is included and privileged data excluded."],
+["Incident Response","What is order of volatility?","Priority order for collecting evidence from most to least volatile."],
+["Incident Response","Most volatile evidence?","CPU registers/cache/memory."],
+["Incident Response","Least volatile among logs/temp/routing/registers?","Logs."],
+["Incident Response","What to do after accidental file deletion?","Stop using system; avoid changes to prevent overwriting."],
+["Incident Response","What Linux tool makes forensic copies?","dd."],
+["Incident Response","What to do after imaging evidence?","Hash original and copy to verify integrity."],
+["Incident Response","What is packet capture?","Full captured network packets including payload."],
+["Incident Response","What is NetFlow?","Network metadata/flow records — not full payload."],
+["Incident Response","Packet capture vs NetFlow?","Packet capture has payload; NetFlow has traffic summary metadata."],
+["Incident Response","What is Syslog?","Standard protocol for sending system logs."],
+["Incident Response","What is a SIEM?","Security Information and Event Management."],
+["Incident Response","What is SOAR?","Security Orchestration, Automation, and Response."],
+["Incident Response","What is EDR?","Endpoint Detection and Response."],
+["Incident Response","What is XDR?","Extended Detection and Response across multiple sources."],
+["Incident Response","What is IDS?","Detects suspicious activity and alerts."],
+["Incident Response","What is IPS?","Detects and blocks suspicious activity inline."],
+["Incident Response","IDS vs IPS?","IDS alerts; IPS blocks."],
+["Incident Response","What is FIM?","File Integrity Monitoring — detects unauthorized file changes."],
+["Incident Response","What is DLP?","Data Loss Prevention — detects/prevents sensitive data leakage."],
+["Incident Response","FIM vs DLP?","FIM detects file changes; DLP prevents data exfiltration."],
+["Incident Response","What is threat hunting?","Proactively searching for threats."],
+["Incident Response","What is STIX?","Structured format for threat intelligence."],
+["Incident Response","What is TAXII?","Protocol for exchanging threat intel over HTTPS."],
+["Incident Response","What is OpenIOC?","Format for indicators of compromise."],
+["Incident Response","What is a honeypot?","Decoy system designed to attract attackers."],
+["Incident Response","What is a honeynet?","Decoy network designed to study attackers."],
+["Incident Response","What is a tarpit?","System designed to slow attackers."],
+["Incident Response","What is a sinkhole/blackhole?","Destination where malicious traffic is redirected or dropped."],
+["Network Security","What is a firewall?","Filters traffic based on rules."],
+["Network Security","What is NGFW?","Next-generation firewall with application awareness and advanced inspection."],
+["Network Security","What is WAF?","Web Application Firewall protecting against SQLi/XSS."],
+["Network Security","WAF vs NGFW?","WAF protects web apps; NGFW protects network traffic with advanced features."],
+["Network Security","What is a proxy?","Intermediary that forwards client requests."],
+["Network Security","What is a reverse proxy?","Proxy in front of servers — often for protection/load balancing."],
+["Network Security","What is load balancing?","Distributing traffic across multiple servers."],
+["Network Security","What is VIP in load balancing?","Front-facing virtual IP clients connect to."],
+["Network Security","What is active/active?","Multiple nodes actively handle traffic."],
+["Network Security","What is active/passive?","One active node; standby takes over on failure."],
+["Network Security","What does active/active prevent?","Single node overload and improves scalability."],
+["Network Security","What is clustering?","Grouping systems for availability/failover."],
+["Network Security","Load balancer vs cluster?","Load balancer distributes traffic; cluster provides coordinated HA/failover."],
+["Network Security","What is high availability?","Minimal downtime."],
+["Network Security","What is fault tolerance?","Continued operation with little/no interruption after failure."],
+["Network Security","What is redundancy?","Extra components to prevent single point of failure."],
+["Network Security","What is single point of failure?","One failed component can bring down service."],
+["Network Security","What is DMZ/screened subnet?","Network segment for public-facing services separated from internal network."],
+["Network Security","What is network segmentation?","Dividing network into security zones."],
+["Network Security","What is microsegmentation?","Fine-grained segmentation often around workloads."],
+["Network Security","What is an air gap?","Physical/logical isolation from networks."],
+["Network Security","What is VLAN?","Logical network segmentation."],
+["Network Security","What is NAC?","Network Access Control."],
+["Network Security","What is 802.1X?","Port-based network access control."],
+["Network Security","What is SASE?","Cloud-delivered security combining SD-WAN, CASB, ZTNA, SWG, FWaaS."],
+["Network Security","What is CASB?","Cloud Access Security Broker enforcing cloud security policies."],
+["Network Security","What is ZTNA?","Zero Trust Network Access."],
+["Network Security","What is SD-WAN?","Software-defined WAN for optimized network connectivity."],
+["Network Security","What is a VPN?","Encrypted tunnel over untrusted network."],
+["Network Security","What is IPSec?","Secure IP protocol suite for VPNs."],
+["Network Security","What is IPSec tunnel mode?","Encrypts entire original IP packet — often gateway-to-gateway."],
+["Network Security","What is IPSec transport mode?","Encrypts payload; preserves original IP header."],
+["Network Security","What is SSL/TLS VPN?","VPN using TLS — often easier for users."],
+["Network Security","What is split tunneling?","Only some traffic goes through VPN."],
+["Network Security","What is full tunnel VPN?","All traffic goes through VPN."],
+["Network Security","What is a jump server?","Controlled access point into another security zone."],
+["Network Security","What is a bastion host?","Hardened exposed system used for access/control."],
+["Network Security","What is a SPAN port?","Switch port mirroring traffic for monitoring."],
+["Network Security","What is a network TAP?","Physical/passive device copying traffic for monitoring."],
+["Network Security","SPAN vs TAP?","SPAN is active switch mirror; TAP is passive hardware copy."],
+["Network Security","What is fail open?","Traffic continues when device fails."],
+["Network Security","What is fail closed?","Traffic blocks when device fails."],
+["Network Security","What usually fails open?","Network TAP."],
+["Network Security","What usually fails closed?","IPS/firewall when security is prioritized."],
+["Network Security","What is UTM?","Unified Threat Management all-in-one security appliance."],
+["Network Security","What is HIDS?","Host-based intrusion detection."],
+["Network Security","What is HIPS?","Host-based intrusion prevention."],
+["Network Security","What is EAP?","Extensible Authentication Protocol."],
+["Network Security","What is PEAP?","Protected EAP — does not require client certificate."],
+["Network Security","What is EAP-TLS?","Certificate-based EAP requiring client certificates."],
+["Wireless & Mobile","What is WPA2?","Wi-Fi security standard using AES/CCMP."],
+["Wireless & Mobile","What is WPA3?","Newer Wi-Fi security with SAE."],
+["Wireless & Mobile","What is SAE?","Simultaneous Authentication of Equals — WPA3 Personal authentication."],
+["Wireless & Mobile","What does SAE prevent?","Offline dictionary/brute-force attacks."],
+["Wireless & Mobile","What is WPS?","Wi-Fi Protected Setup — insecure and should be disabled."],
+["Wireless & Mobile","What is a captive portal?","Web page requiring login/acceptance before network access."],
+["Wireless & Mobile","What is a heatmap?","Wireless survey showing signal strength coverage."],
+["Wireless & Mobile","What is channel overlap?","APs interfering due to overlapping frequencies."],
+["Wireless & Mobile","What is a rogue AP?","Unauthorized access point."],
+["Wireless & Mobile","What is an evil twin AP?","Malicious AP impersonating a legitimate one."],
+["Wireless & Mobile","What is MDM?","Mobile Device Management."],
+["Wireless & Mobile","What is UEM?","Unified Endpoint Management for mobile, desktops, laptops, and more."],
+["Wireless & Mobile","MDM vs UEM?","MDM focuses mobile; UEM manages broader endpoint types."],
+["Wireless & Mobile","What is MAM?","Mobile Application Management."],
+["Wireless & Mobile","What is BYOD?","Bring Your Own Device."],
+["Wireless & Mobile","What is CYOD?","Choose Your Own Device."],
+["Wireless & Mobile","What is COPE?","Corporate-Owned, Personally Enabled."],
+["Wireless & Mobile","What is COBO?","Corporate-Owned, Business-Only."],
+["Wireless & Mobile","What is containerization on mobile?","Separating corporate and personal data/apps."],
+["Wireless & Mobile","What is remote wipe?","Remotely erasing data from a lost/stolen device."],
+["Wireless & Mobile","What is geofencing?","Applying rules based on device location."],
+["Wireless & Mobile","What is a screen lock policy?","Enforces device locking after inactivity."],
+["Wireless & Mobile","What is full-device encryption?","Encrypting all storage on a device."],
+["Wireless & Mobile","What is an access control vestibule/mantrap?","Two-door secure entry preventing tailgating."],
+["Wireless & Mobile","What is a bollard?","Physical post/barrier stopping vehicles."],
+["Wireless & Mobile","What is a Faraday cage?","Enclosure blocking electromagnetic/radio signals."],
+["Wireless & Mobile","What is a lock?","Physical access control."],
+["Wireless & Mobile","What is a badge reader?","Physical authentication control."],
+["Wireless & Mobile","What is CCTV?","Camera monitoring/detective physical control."],
+["Wireless & Mobile","What is a guard?","Physical/deterrent/detective control."],
+["Wireless & Mobile","What is lighting?","Deterrent physical control."],
+["Wireless & Mobile","What is a fence?","Physical perimeter control."],
+["Wireless & Mobile","What is a 'Beware of Dog' sign?","Deterrent control."],
+["Wireless & Mobile","What is protected by bollards?","Entrances from vehicle ramming."],
+["Cloud & Virtualization","What is IaaS?","Cloud provider supplies infrastructure; customer manages OS/apps/data."],
+["Cloud & Virtualization","What is PaaS?","Provider supplies platform; customer deploys applications/code."],
+["Cloud & Virtualization","What is SaaS?","Provider supplies complete application."],
+["Cloud & Virtualization","What is FaaS?","Code runs in response to events; billed per execution."],
+["Cloud & Virtualization","FaaS is a subset of what?","PaaS."],
+["Cloud & Virtualization","What is the shared responsibility model?","Cloud security duties split between provider and customer."],
+["Cloud & Virtualization","What always remains customer responsibility?","Data."],
+["Cloud & Virtualization","Who manages physical datacenter in cloud?","Cloud provider."],
+["Cloud & Virtualization","SaaS customer is mostly responsible for?","Data, identity, access, configuration."],
+["Cloud & Virtualization","IaaS customer is responsible for?","OS, apps, data, identity, configurations."],
+["Cloud & Virtualization","What is cloud elasticity?","Automatically expanding/contracting resources."],
+["Cloud & Virtualization","What is scalability?","Ability to handle increased demand."],
+["Cloud & Virtualization","What is an availability zone?","Isolated datacenter location within a region."],
+["Cloud & Virtualization","What is a region?","Geographic cloud area containing availability zones."],
+["Cloud & Virtualization","What is multi-cloud?","Using multiple cloud providers."],
+["Cloud & Virtualization","What is hybrid cloud?","Combination of on-prem and cloud."],
+["Cloud & Virtualization","What is public cloud?","Shared provider infrastructure available to customers."],
+["Cloud & Virtualization","What is private cloud?","Cloud infrastructure dedicated to one organization."],
+["Cloud & Virtualization","What is community cloud?","Shared by organizations with common needs."],
+["Cloud & Virtualization","What is a container?","Lightweight isolated app environment sharing host OS kernel."],
+["Cloud & Virtualization","What is Docker?","Container platform."],
+["Cloud & Virtualization","What is Kubernetes?","Container orchestration platform."],
+["Cloud & Virtualization","What is a VM?","Virtual machine with its own guest OS."],
+["Cloud & Virtualization","What is a hypervisor?","Software managing virtual machines."],
+["Cloud & Virtualization","What is a Type I hypervisor?","Bare-metal hypervisor running directly on hardware."],
+["Cloud & Virtualization","What is a Type II hypervisor?","Hosted hypervisor running on a host OS."],
+["Cloud & Virtualization","Which hypervisor requires patching host OS?","Type II."],
+["Cloud & Virtualization","What is VM escape?","Attacker breaks out of VM to host/hypervisor."],
+["Cloud & Virtualization","What is VM sprawl?","Uncontrolled growth of forgotten/unused VMs."],
+["Cloud & Virtualization","What is resource tagging?","Labeling cloud assets for ownership/cost/security tracking."],
+["Cloud & Virtualization","What risk does missing resource tagging create?","VM/resource sprawl."],
+["Cloud & Virtualization","What is a cloud security group?","Cloud firewall controlling instance traffic."],
+["Cloud & Virtualization","Security group vs firewall?","Security group is cloud-native network access control — like firewall rules."],
+["Cloud & Virtualization","What is CASB used for?","Visibility and control over cloud application usage."],
+["Cloud & Virtualization","What is serverless?","Cloud execution without managing servers directly."],
+["Cloud & Virtualization","What is IaC?","Infrastructure as Code."],
+["Cloud & Virtualization","What does IaC help with?","Consistent, repeatable deployments."],
+["Application Security","What is input validation?","Checking input for allowed type, length, format, and range."],
+["Application Security","What is allowlisting?","Permitting only known-good input/actions."],
+["Application Security","What is blocklisting?","Blocking known-bad input/actions."],
+["Application Security","Allowlist vs blocklist for validation?","Allowlist is better."],
+["Application Security","Why is client-side validation insufficient?","Attackers can bypass the browser."],
+["Application Security","What is server-side validation?","Validation enforced by the server/application backend."],
+["Application Security","What prevents injection attacks best?","Input allowlisting and parameterized queries."],
+["Application Security","What are parameterized queries?","Queries separating SQL code from user input."],
+["Application Security","What is a prepared statement?","Precompiled SQL query using parameters."],
+["Application Security","What is output encoding?","Encoding data before display to prevent XSS."],
+["Application Security","What is secure coding?","Writing software to avoid vulnerabilities."],
+["Application Security","What is code review?","Reviewing source code for flaws."],
+["Application Security","What is static analysis/SAST?","Analyzing source code without running it."],
+["Application Security","What is dynamic analysis/DAST?","Testing running applications."],
+["Application Security","What is fuzzing?","Sending random/malformed input to find bugs."],
+["Application Security","What is dependency scanning/SCA?","Checking third-party libraries for vulnerabilities."],
+["Application Security","What is SBOM?","Software Bill of Materials listing components."],
+["Application Security","What is secure SDLC?","Integrating security into software development lifecycle."],
+["Application Security","What is DevSecOps?","Adding security into DevOps processes."],
+["Application Security","What is CI/CD?","Continuous integration/continuous deployment."],
+["Application Security","What is sandboxing?","Isolating code/applications for safety."],
+["Application Security","What is SQL error disclosure?","Error messages reveal database/application details."],
+["Application Security","What is directory listing risk?","Exposes files/directories on web server."],
+["Application Security","What is default credentials risk?","Attackers can log in using known vendor passwords."],
+["Application Security","What is insecure direct object reference?","Accessing objects without proper authorization checks."],
+["Application Security","What is API key exposure?","Publicly leaking secrets that grant access."],
+["Application Security","What should never be in public repos?","API keys, passwords, private keys."],
+["Application Security","What is exception handling?","Managing errors safely without leaking sensitive information."],
+["Application Security","What is software supply chain risk?","Risk from dependencies, vendors, build systems, or updates."],
+["Application Security","What is code signing?","Signing software to prove origin and integrity."],
+["Linux & Windows CLI","What does dd do?","Creates low-level disk/file copies — used for forensic imaging."],
+["Linux & Windows CLI","What does grep do?","Searches text for patterns."],
+["Linux & Windows CLI","What does cat do?","Displays/concatenates file contents."],
+["Linux & Windows CLI","What does chmod do?","Changes file permissions."],
+["Linux & Windows CLI","What does chown do?","Changes file owner/group."],
+["Linux & Windows CLI","What does ps show?","Running processes."],
+["Linux & Windows CLI","What does top show?","Real-time process/resource usage."],
+["Linux & Windows CLI","What does netstat show?","Network connections/listening ports."],
+["Linux & Windows CLI","What does ss show?","Modern tool for socket/network connection info."],
+["Linux & Windows CLI","What does journalctl show?","systemd logs."],
+["Linux & Windows CLI","What does systemctl do?","Manages systemd services."],
+["Linux & Windows CLI","What does sudo do?","Runs commands with elevated privileges."],
+["Linux & Windows CLI","What is /etc/passwd?","User account information."],
+["Linux & Windows CLI","What is /etc/shadow?","Password hashes for local users."],
+["Linux & Windows CLI","Which Linux file for offline password cracking?","/etc/shadow."],
+["Linux & Windows CLI","What is auth.log?","Linux authentication log on Debian/Ubuntu."],
+["Linux & Windows CLI","What is secure log?","Linux authentication/security log on RHEL/CentOS."],
+["Linux & Windows CLI","What is Windows Event Viewer?","Tool for viewing Windows logs."],
+["Linux & Windows CLI","What are Windows Security logs used for?","Logons, privilege use, audit events."],
+["Linux & Windows CLI","What is Sysmon?","Windows tool providing detailed endpoint telemetry."],
+["Linux & Windows CLI","What is PowerShell logging?","Logs PowerShell commands/script activity."],
+["Linux & Windows CLI","What is bash history?","Record of shell commands run by a user."],
+["Linux & Windows CLI","What is cron?","Linux scheduled task service."],
+["Linux & Windows CLI","What is crontab?","File/table defining scheduled jobs."],
+["Linux & Windows CLI","IP config on Linux?","ip addr or ifconfig."],
+["Linux & Windows CLI","IP config on Windows?","ipconfig."],
+["Linux & Windows CLI","Trace route on Windows?","tracert."],
+["Linux & Windows CLI","Trace route on Linux?","traceroute."],
+["Linux & Windows CLI","Test connectivity?","ping."],
+["Linux & Windows CLI","Query DNS?","nslookup or dig."],
+["Disaster Recovery","What is a hot site?","Fully operational backup facility ready immediately."],
+["Disaster Recovery","What is a warm site?","Facility with equipment but data/configuration restoration needed."],
+["Disaster Recovery","What is a cold site?","Facility with basic utilities only."],
+["Disaster Recovery","Which DR site is fastest?","Hot site."],
+["Disaster Recovery","Which DR site is cheapest?","Cold site."],
+["Disaster Recovery","Which DR site has power and internet only?","Cold site."],
+["Disaster Recovery","Which DR site has hardware but needs data restore?","Warm site."],
+["Disaster Recovery","Which DR site is fully ready?","Hot site."],
+["Disaster Recovery","What is UPS?","Battery backup for short outages/undervoltage."],
+["Disaster Recovery","What is a generator?","Long-term backup power."],
+["Disaster Recovery","UPS vs generator?","UPS handles short outages immediately; generator handles longer outages."],
+["Disaster Recovery","What is PDU?","Power Distribution Unit."],
+["Disaster Recovery","What are dual power supplies for?","Redundancy if one power source/supply fails."],
+["Disaster Recovery","What is a backup?","Copy of data for recovery."],
+["Disaster Recovery","What is a full backup?","Backs up all selected data."],
+["Disaster Recovery","What is an incremental backup?","Backs up changes since last backup."],
+["Disaster Recovery","What is a differential backup?","Backs up changes since last full backup."],
+["Disaster Recovery","What is a snapshot?","Point-in-time system/data state."],
+["Disaster Recovery","What is replication?","Copying data/systems to another location."],
+["Disaster Recovery","What is failover?","Automatic switch to backup system."],
+["Disaster Recovery","What is failback?","Returning service to original system after recovery."],
+["Disaster Recovery","What is RAID 0?","Striping — performance; no fault tolerance."],
+["Disaster Recovery","What is RAID 1?","Mirroring — duplicates data; fault tolerance."],
+["Disaster Recovery","What is RAID 5?","Striping with parity — tolerates one disk failure."],
+["Disaster Recovery","What is RAID 6?","Striping with double parity — tolerates two disk failures."],
+["Disaster Recovery","What is RAID 10?","Stripe of mirrors — performance and redundancy; requires more disks."],
+["Disaster Recovery","Which RAID has no fault tolerance?","RAID 0."],
+["Disaster Recovery","Which RAID mirrors data?","RAID 1."],
+["Disaster Recovery","Which RAID uses parity without double storage?","RAID 5."],
+["Disaster Recovery","Which RAID requires about double storage?","RAID 1 or RAID 10."],
+["Disaster Recovery","What is restoration order documentation?","Documented order for restoring systems after disaster."],
+["Disaster Recovery","What should usually be restored early?","Core network/authentication services."],
+["Data Protection","What is data at rest?","Stored data."],
+["Data Protection","What is data in transit?","Data moving across a network."],
+["Data Protection","What is data in use?","Data actively being processed or in memory."],
+["Data Protection","How to protect data at rest?","Encryption, access controls, physical security."],
+["Data Protection","How to protect data in transit?","TLS, VPN, IPSec."],
+["Data Protection","How to protect data in use?","Memory protection, secure enclaves, application controls."],
+["Data Protection","What is masking?","Hiding part of data — e.g. ****1234."],
+["Data Protection","What is tokenization?","Replacing sensitive data with a reversible token using lookup table."],
+["Data Protection","Tokenization vs hashing?","Tokenization is reversible with lookup; hashing is one-way."],
+["Data Protection","Masking vs tokenization?","Masking hides display; tokenization replaces with token."],
+["Data Protection","What is deidentification?","Removing identifying information."],
+["Data Protection","What is anonymization?","Irreversibly removing identifiers."],
+["Data Protection","What is pseudonymization?","Replacing identifiers with pseudonyms/tokens."],
+["Data Protection","What is data minimization?","Collecting/keeping only necessary data."],
+["Data Protection","What is data retention?","Keeping data for a defined period."],
+["Data Protection","What is data disposal?","Securely destroying data."],
+["Data Protection","What is sanitization?","Making data unrecoverable."],
+["Data Protection","What is purging?","Removing data using logical methods."],
+["Data Protection","What is degaussing?","Destroying magnetic data with a strong magnetic field."],
+["Data Protection","What is shredding?","Physical destruction of media."],
+["Data Protection","What is crypto erase?","Destroying encryption keys to make encrypted data unreadable."],
+["Data Protection","Best sanitization for encrypted SSD?","Destroy encryption key and use secure erase."],
+["Data Protection","Why is overwriting SSDs unreliable?","Wear leveling may leave remnants."],
+["Data Protection","What is DLP?","Prevents sensitive data leakage."],
+["Data Protection","What is classification labeling?","Marking data according to sensitivity."],
+["Data Protection","What is watermarking?","Embedding identifying marks to track data."],
+["Identity & Access","What is IAM?","Identity and Access Management."],
+["Identity & Access","What is MFA?","Authentication using two or more different factor types."],
+["Identity & Access","Authentication factor types?","Something you know, have, are, somewhere you are, something you do."],
+["Identity & Access","What is a password?","Something you know."],
+["Identity & Access","What is a PIN?","Something you know."],
+["Identity & Access","What is a smart card?","Something you have."],
+["Identity & Access","What is a hardware token?","Something you have."],
+["Identity & Access","What is a fingerprint?","Something you are."],
+["Identity & Access","What is face recognition?","Something you are."],
+["Identity & Access","What is geolocation (auth)?","Somewhere you are."],
+["Identity & Access","What is a behavioral biometric?","Something you do."],
+["Identity & Access","PIN + password = MFA?","No — both are something you know."],
+["Identity & Access","PIN + fingerprint = MFA?","Yes — know + are."],
+["Identity & Access","What is TOTP?","Time-based one-time password."],
+["Identity & Access","What is HOTP?","HMAC/event-counter-based one-time password."],
+["Identity & Access","TOTP vs HOTP?","TOTP uses time; HOTP uses counter/event."],
+["Identity & Access","What is password history?","Prevents reuse of recent passwords."],
+["Identity & Access","What is minimum password age?","Prevents rapid password changes to bypass history."],
+["Identity & Access","What is account lockout?","Locks account after failed attempts."],
+["Identity & Access","What is impossible travel?","Risky login detection based on impossible geolocation timing."],
+["Identity & Access","What is SSO?","Single Sign-On."],
+["Identity & Access","What is federation?","Trust relationship allowing identity across organizations."],
+["Identity & Access","What is SAML?","XML-based federation/SSO standard."],
+["Identity & Access","What is OAuth?","Authorization framework for delegated access."],
+["Identity & Access","What is OpenID Connect?","Authentication layer built on OAuth 2.0."],
+["Identity & Access","What is RADIUS?","Centralized AAA — often network/VPN authentication."],
+["Identity & Access","What is TACACS+?","Cisco AAA protocol separating authentication, authorization, accounting."],
+["Identity & Access","RADIUS vs TACACS+?","RADIUS combines auth/authz; TACACS+ separates them and encrypts full payload."],
+["Identity & Access","What is LDAP?","Directory access protocol."],
+["Identity & Access","What is Kerberos?","Ticket-based authentication protocol."],
+["Identity & Access","What is biometric FAR?","False Acceptance Rate."],
+["Identity & Access","What is biometric FRR?","False Rejection Rate."],
+["Identity & Access","What is CER?","Crossover Error Rate where FAR and FRR meet."],
+["Identity & Access","False acceptance means?","Unauthorized user accepted."],
+["Identity & Access","False rejection means?","Authorized user rejected."],
+["Identity & Access","What is PAM?","Privileged Access Management."],
+["Identity & Access","What is JIT access?","Just-in-time temporary access."],
+["Identity & Access","What is RBAC?","Role-Based Access Control."],
+["Identity & Access","What is ABAC?","Attribute-Based Access Control."],
+["Identity & Access","What is DAC?","Discretionary Access Control."],
+["Identity & Access","What is MAC?","Mandatory Access Control."],
+["Ports & Protocols","FTP Data","TCP 20"],
+["Ports & Protocols","FTP Control","TCP 21"],
+["Ports & Protocols","SSH","TCP 22"],
+["Ports & Protocols","SCP","TCP 22"],
+["Ports & Protocols","SFTP","TCP 22"],
+["Ports & Protocols","Telnet","TCP 23"],
+["Ports & Protocols","SMTP","TCP 25"],
+["Ports & Protocols","TACACS+","TCP 49"],
+["Ports & Protocols","DNS","TCP/UDP 53"],
+["Ports & Protocols","DHCP Server","UDP 67"],
+["Ports & Protocols","DHCP Client","UDP 68"],
+["Ports & Protocols","TFTP","UDP 69"],
+["Ports & Protocols","HTTP","TCP 80"],
+["Ports & Protocols","Kerberos","TCP/UDP 88"],
+["Ports & Protocols","POP3","TCP 110"],
+["Ports & Protocols","NTP","UDP 123"],
+["Ports & Protocols","NetBIOS Name Service","UDP 137"],
+["Ports & Protocols","NetBIOS Datagram","UDP 138"],
+["Ports & Protocols","NetBIOS Session","TCP 139"],
+["Ports & Protocols","IMAP","TCP 143"],
+["Ports & Protocols","SNMP","UDP 161"],
+["Ports & Protocols","SNMP Trap","UDP 162"],
+["Ports & Protocols","BGP","TCP 179"],
+["Ports & Protocols","LDAP","TCP/UDP 389"],
+["Ports & Protocols","HTTPS","TCP 443"],
+["Ports & Protocols","SMB/CIFS","TCP 445"],
+["Ports & Protocols","SMTPS","TCP 465"],
+["Ports & Protocols","IKE","UDP 500"],
+["Ports & Protocols","Syslog","UDP 514"],
+["Ports & Protocols","DHCPv6 Client","UDP 546"],
+["Ports & Protocols","DHCPv6 Server","UDP 547"],
+["Ports & Protocols","SMTP Submission","TCP 587"],
+["Ports & Protocols","LDAPS","TCP 636"],
+["Ports & Protocols","FTPS Data","TCP 989"],
+["Ports & Protocols","FTPS Control","TCP 990"],
+["Ports & Protocols","IMAPS","TCP 993"],
+["Ports & Protocols","POP3S","TCP 995"],
+["Ports & Protocols","Microsoft SQL Server","TCP 1433"],
+["Ports & Protocols","Oracle Database","TCP 1521"],
+["Ports & Protocols","L2TP","UDP 1701"],
+["Ports & Protocols","PPTP","TCP 1723"],
+["Ports & Protocols","RADIUS Authentication","UDP 1812"],
+["Ports & Protocols","RADIUS Accounting","UDP 1813"],
+["Ports & Protocols","NFS","TCP/UDP 2049"],
+["Ports & Protocols","MySQL","TCP 3306"],
+["Ports & Protocols","RDP","TCP 3389"],
+["Ports & Protocols","SIP","TCP/UDP 5060"],
+["Ports & Protocols","SIP over TLS","TCP 5061"],
+["Ports & Protocols","PostgreSQL","TCP 5432"],
+["Ports & Protocols","VNC","TCP 5900"],
+["Ports & Protocols","Secure Syslog","TCP 6514"],
+["Ports & Protocols","HTTP Alternate","TCP 8080"]
+];
+
+let deck=[], idx=0, flipped=false, gotSet=new Set(), missSet=new Set();
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function load(cards){
+  deck=[...cards]; idx=0; flipped=false; gotSet=new Set(); missSet=new Set();
+  document.getElementById('result-box').style.display='none';
+  document.getElementById('stage').style.display='';
+  document.getElementById('grade-row').style.visibility='hidden';
+  render(); updateStats();
+}
+
+function render(){
+  if(!deck.length)return;
+  const[dom,q,a]=deck[idx];
+  document.getElementById('cd-front').textContent=dom;
+  document.getElementById('cd-back').textContent=dom;
+  document.getElementById('card-q').textContent=q;
+  document.getElementById('card-a').textContent=a;
+  document.getElementById('card-inner').classList.remove('flipped');
+  flipped=false;
+  document.getElementById('grade-row').style.visibility='hidden';
+  const pct=Math.round(((idx+1)/deck.length)*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('pos').textContent=(idx+1)+' / '+deck.length;
+}
+
+function flip(){
+  if(flipped)return;
+  document.getElementById('card-inner').classList.add('flipped');
+  flipped=true;
+  document.getElementById('grade-row').style.visibility='visible';
+}
+
+function grade(got){
+  if(got)gotSet.add(idx); else missSet.add(idx);
+  updateStats();
+  if(idx<deck.length-1){idx++;render();}else showResult();
+}
+
+function next(){if(idx<deck.length-1){idx++;render();}}
+function prev(){if(idx>0){idx--;render();}}
+
+function doShuffle(){
+  const sel=document.getElementById('dom-sel').value;
+  load(shuffle(sel==='all'?[...D]:D.filter(c=>c[0]===sel)));
+}
+
+function changeDomain(){
+  const sel=document.getElementById('dom-sel').value;
+  load(sel==='all'?[...D]:D.filter(c=>c[0]===sel));
+}
+
+function drillMissed(){
+  const cards=[...missSet].map(i=>deck[i]);
+  if(cards.length)load(cards);
+}
+
+function restart(){changeDomain();}
+
+function updateStats(){
+  document.getElementById('s-total').textContent=deck.length;
+  document.getElementById('s-got').textContent=gotSet.size;
+  document.getElementById('s-miss').textContent=missSet.size;
+  document.getElementById('s-left').textContent=deck.length-gotSet.size-missSet.size;
+  const mb=document.getElementById('btn-missed');
+  if(missSet.size>0){mb.style.display='';document.getElementById('missed-n').textContent=missSet.size;}
+  else mb.style.display='none';
+}
+
+function showResult(){
+  const total=gotSet.size+missSet.size||1;
+  const pct=Math.round((gotSet.size/total)*100);
+  const sc=document.getElementById('r-score');
+  sc.textContent=pct+'%';
+  sc.style.color=pct>=80?'var(--text-success)':pct>=60?'var(--text-warning)':'var(--text-danger)';
+  document.getElementById('r-msg').textContent=pct>=80?'Solid — you know this material.':pct>=60?'Getting there — drill the missed ones.':'Keep going — repetition builds retention.';
+  document.getElementById('r-drill').style.display=missSet.size>0?'':'none';
+  document.getElementById('stage').style.display='none';
+  document.getElementById('grade-row').style.visibility='hidden';
+  document.getElementById('result-box').style.display='block';
+}
+
+document.addEventListener('keydown',e=>{
+  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+  if(e.key===' '){e.preventDefault();flip();}
+  else if(e.key==='ArrowRight')next();
+  else if(e.key==='ArrowLeft')prev();
+  else if((e.key==='g'||e.key==='G')&&flipped)grade(true);
+  else if((e.key==='m'||e.key==='M')&&flipped)grade(false);
+});
+
+load([...D]);
+</script>

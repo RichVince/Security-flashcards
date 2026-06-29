@@ -1,188 +1,162 @@
-
-<h2 class="sr-only">Complete Security+ SY0-701 interactive flashcard deck. 563 cards across 14 domains. Click a card to flip it and reveal the answer. Use Got it or Missed to track your score. Filter by domain using the dropdown.</h2>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Security+ SY0-701 Exam Ready Flashcards</title>
+<meta name="description" content="CompTIA Security+ SY0-701 flashcards, exam traps, weak-area drills, lightning mode, and exam countdown." />
 <style>
 :root{
-  --bg:#05070d;
-  --surface-1:#0d1117;
-  --surface-2:#161b22;
-  --surface-3:#21262d;
-  --border:#30363d;
-  --border-strong:#3d444d;
-  --text-primary:#f0f6fc;
-  --text-secondary:#c9d1d9;
-  --text-muted:#8b949e;
-  --text-success:#3fb950;
-  --text-danger:#f85149;
-  --text-warning:#d29922;
-  --accent:#58a6ff;
-  --radius:12px;
+  --bg:#05070d; --surface-1:#0d1117; --surface-2:#161b22; --surface-3:#21262d;
+  --border:#30363d; --border-strong:#3d444d; --text-primary:#f0f6fc; --text-secondary:#c9d1d9;
+  --text-muted:#8b949e; --success:#3fb950; --danger:#f85149; --warning:#d29922; --accent:#58a6ff;
+  --purple:#bc8cff; --cyan:#39c5cf; --radius:14px;
 }
-
-html,
-body{
-  margin:0;
-  min-height:100%;
-  background:
-    radial-gradient(circle at top left, rgba(88,166,255,.13), transparent 28rem),
-    linear-gradient(180deg,#05070d 0%,#0d1117 45%,#05070d 100%);
-  color:var(--text-primary);
-  font-family:Inter,Segoe UI,Arial,sans-serif;
-}
-
-body{
-  padding:24px;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-.sr-only{
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  white-space:nowrap;
-  border:0;
-}
-
-.fc-shell{
-  max-width:1000px;
-  margin:0 auto;
-  padding:1.25rem;
-  background:rgba(13,17,23,.86);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:0 24px 80px rgba(0,0,0,.45);
-}
-
-.fc-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
-
-select,
-button{
-  background:var(--surface-3);
-  color:var(--text-primary);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px 12px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-select{
-  min-width:230px;
-}
-
-button:hover,
-select:hover{
-  border-color:var(--accent);
-  background:#263142;
-}
-
-button:active{
-  transform:translateY(1px);
-}
-
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
-.stat-box{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.stat-val{display:block;font-size:22px;font-weight:600;color:var(--text-primary);line-height:1.2}
-.stat-lbl{font-size:12px;color:var(--text-muted)}
-.stage{perspective:1000px;height:220px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
-.card-inner{position:relative;width:100%;height:100%;transition:transform .42s ease;transform-style:preserve-3d}
-.card-inner.flipped{transform:rotateY(180deg)}
-.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;gap:8px;background:linear-gradient(145deg,#161b22,#0d1117)}
-.card-face.back{transform:rotateY(180deg);background:linear-gradient(145deg,#0f1724,#161b22)}
-.card-dom{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.09em}
-.card-q{font-size:20px;font-weight:600;color:var(--text-primary);line-height:1.35}
-.card-a{font-size:17px;color:var(--text-primary);line-height:1.5}
-.card-hint{font-size:12px;color:var(--text-muted)}
-.grade-row{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
-.nav-row{display:flex;align-items:center;gap:8px}
-.prog-wrap{flex:1;height:5px;background:var(--border-strong);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--text-success));border-radius:99px;transition:width .3s}
-.pos-lbl{font-size:13px;color:var(--text-secondary);min-width:52px;text-align:right}
-.result-box{border:1px solid var(--border);background:var(--surface-1);border-radius:12px;padding:1.5rem;text-align:center;margin-top:4px}
-.result-score{font-size:44px;font-weight:600;margin:.5rem 0}
-.result-msg{font-size:14px;color:var(--text-secondary);margin-bottom:1rem}
-.result-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-
-@media(max-width:700px){
-  body{padding:12px}
-  .fc-shell{padding:1rem}
-  .stats-row{grid-template-columns:repeat(2,1fr)}
-  .stage{height:260px}
-  select{width:100%}
-}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+ radial-gradient(circle at top left,rgba(88,166,255,.16),transparent 28rem),
+ radial-gradient(circle at top right,rgba(188,140,255,.11),transparent 24rem),
+ linear-gradient(180deg,#05070d 0%,#0d1117 45%,#05070d 100%);
+ color:var(--text-primary);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{padding:18px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.shell{max-width:1180px;margin:0 auto}
+.hero{border:1px solid var(--border);background:rgba(13,17,23,.88);border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.hero h1{margin:0 0 6px;font-size:clamp(24px,4vw,42px);letter-spacing:-.04em}
+.hero p{margin:0;color:var(--text-secondary);line-height:1.5}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{border:1px solid var(--border);background:var(--surface-2);border-radius:999px;padding:7px 10px;font-size:12px;color:var(--text-secondary)}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.panel{border:1px solid var(--border);background:rgba(13,17,23,.88);border-radius:18px;padding:16px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+select,input,button{background:var(--surface-3);color:var(--text-primary);border:1px solid var(--border);border-radius:11px;padding:10px 12px;font-size:14px}
+button{cursor:pointer} button:hover,select:hover,input:hover{border-color:var(--accent);background:#263142} button:active{transform:translateY(1px)}
+.primary{background:linear-gradient(135deg,var(--accent),#2f81f7);border-color:#2f81f7;color:white}
+.danger{border-color:rgba(248,81,73,.45)} .success{border-color:rgba(63,185,80,.45)}
+select{min-width:235px} input{min-width:210px;flex:1}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.stat b{display:block;font-size:23px;line-height:1.1} .stat span{font-size:12px;color:var(--text-muted)}
+.stage{perspective:1200px;height:260px;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
+.inner{position:relative;width:100%;height:100%;transition:transform .42s ease;transform-style:preserve-3d}
+.inner.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:10px;background:linear-gradient(145deg,#161b22,#0d1117)}
+.face.back{transform:rotateY(180deg);background:linear-gradient(145deg,#0f1724,#161b22)}
+.dom{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.q{font-size:clamp(19px,3vw,28px);font-weight:800;line-height:1.25} .a{font-size:clamp(17px,2.5vw,22px);line-height:1.45;color:var(--text-primary)}
+.hint{font-size:12px;color:var(--text-muted)} .grade,.nav{display:flex;gap:8px;justify-content:center;margin-bottom:10px;align-items:center}
+.prog-wrap{flex:1;height:7px;background:var(--border-strong);border-radius:99px;overflow:hidden} .prog{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:99px;transition:width .3s}
+.pos{font-size:13px;color:var(--text-secondary);min-width:62px;text-align:right}
+.result{display:none;text-align:center;border:1px solid var(--border);background:var(--surface-1);border-radius:14px;padding:18px}
+.score{font-size:46px;font-weight:900;margin:8px 0}
+.side-title{margin:0 0 10px;font-size:18px}
+.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.timebox{background:linear-gradient(145deg,#161b22,#0d1117);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center}
+.timebox b{display:block;font-size:26px} .timebox span{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.mode-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.mode{text-align:left;min-height:68px} .mode small{display:block;color:var(--text-muted);margin-top:4px;line-height:1.3}
+.domain-list{display:grid;gap:7px;max-height:340px;overflow:auto;padding-right:4px}
+.domain-line{display:grid;grid-template-columns:128px 1fr 44px;gap:8px;align-items:center;font-size:12px;color:var(--text-secondary)}
+.mini-bar{height:7px;background:var(--border-strong);border-radius:99px;overflow:hidden} .mini-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:99px}
+.weak{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px} .chip{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:5px 8px;color:var(--text-secondary);background:var(--surface-2)}
+.footer-note{margin-top:12px;font-size:12px;color:var(--text-muted);line-height:1.5}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.countdown{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){body{padding:10px}.hero,.panel{padding:13px}select,input{width:100%;min-width:0}.stage{height:305px}.mode-row{grid-template-columns:1fr}.domain-line{grid-template-columns:105px 1fr 38px}}
 </style>
-
-<div class="fc-shell">
-  <div class="fc-top">
-    <select id="dom-sel" onchange="changeDomain()" aria-label="Filter by domain">
-      <option value="all">All domains (563)</option>
-      <option value="Cryptography">Cryptography (61)</option>
-      <option value="Malware & Attacks">Malware &amp; Attacks (59)</option>
-      <option value="Social Engineering">Social Engineering (37)</option>
-      <option value="Policies & Governance">Policies &amp; Governance (26)</option>
-      <option value="Incident Response">Incident Response (44)</option>
-      <option value="Network Security">Network Security (58)</option>
-      <option value="Wireless & Mobile">Wireless &amp; Mobile (38)</option>
-      <option value="Cloud & Virtualization">Cloud &amp; Virtualization (37)</option>
-      <option value="Application Security">Application Security (29)</option>
-      <option value="Linux & Windows CLI">Linux &amp; Windows CLI (28)</option>
-      <option value="Disaster Recovery">Disaster Recovery (35)</option>
-      <option value="Data Protection">Data Protection (30)</option>
-      <option value="Identity & Access">Identity &amp; Access (41)</option>
-      <option value="Ports & Protocols">Ports &amp; Protocols (53)</option>
-    </select>
-    <button onclick="doShuffle()" aria-label="Shuffle"><i class="ti ti-refresh" aria-hidden="true"></i> Shuffle</button>
-    <button id="btn-missed" style="display:none" onclick="drillMissed()"><i class="ti ti-target" aria-hidden="true"></i> Drill missed (<span id="missed-n">0</span>)</button>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat-box"><span class="stat-val" id="s-total">0</span><span class="stat-lbl">Cards</span></div>
-    <div class="stat-box"><span class="stat-val" id="s-got" style="color:var(--text-success)">0</span><span class="stat-lbl">Got it</span></div>
-    <div class="stat-box"><span class="stat-val" id="s-miss" style="color:var(--text-danger)">0</span><span class="stat-lbl">Missed</span></div>
-    <div class="stat-box"><span class="stat-val" id="s-left" style="color:var(--text-warning)">0</span><span class="stat-lbl">Remaining</span></div>
-  </div>
-
-  <div class="stage" id="stage" onclick="flip()" role="button" tabindex="0" aria-label="Flashcard — click to flip" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flip()}">
-    <div class="card-inner" id="card-inner">
-      <div class="card-face front">
-        <div class="card-dom" id="cd-front"></div>
-        <div class="card-q" id="card-q"></div>
-        <div class="card-hint">Click to reveal answer</div>
-      </div>
-      <div class="card-face back">
-        <div class="card-dom" id="cd-back"></div>
-        <div class="card-a" id="card-a"></div>
-      </div>
+</head>
+<body>
+<h2 class="sr-only">Complete Security+ SY0-701 interactive flashcard deck upgraded with exam traps, weak-area drills, lightning mode, search, local progress, and exam countdown.</h2>
+<div class="shell">
+  <section class="hero">
+    <h1>Security+ SY0-701 Exam Ready Portal</h1>
+    <p>Flashcards, exam traps, weak-area drills, lightning mode, and countdown focus. Built for the final sprint.</p>
+    <div class="badges">
+      <div class="badge" id="badge-count">Cards loading...</div>
+      <div class="badge">Keyboard: Space flip · G got it · M missed · ← → move</div>
+      <div class="badge">Goal: 85%+ before exam</div>
     </div>
-  </div>
+  </section>
 
-  <div class="grade-row" id="grade-row" style="visibility:hidden">
-    <button onclick="grade(false)"><i class="ti ti-x" aria-hidden="true"></i> Missed</button>
-    <button onclick="grade(true)"><i class="ti ti-check" aria-hidden="true"></i> Got it</button>
-  </div>
+  <div class="grid">
+    <main class="panel">
+      <div class="controls">
+        <select id="dom-sel" onchange="changeDomain()" aria-label="Filter by domain"></select>
+        <input id="search" oninput="applyFilters()" placeholder="Search cards: OAuth, RTO, Linux..." />
+        <button onclick="doShuffle()">Shuffle</button>
+        <button onclick="toggleStar()" id="star-btn">☆ Star</button>
+        <button id="btn-missed" style="display:none" onclick="drillMissed()">Drill missed (<span id="missed-n">0</span>)</button>
+      </div>
 
-  <div class="nav-row">
-    <button onclick="prev()" aria-label="Previous card"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
-    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
-    <div class="pos-lbl" id="pos">1 / 1</div>
-    <button onclick="next()" aria-label="Next card"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-  </div>
+      <div class="stats">
+        <div class="stat"><b id="s-total">0</b><span>Cards</span></div>
+        <div class="stat"><b id="s-got" style="color:var(--success)">0</b><span>Got it</span></div>
+        <div class="stat"><b id="s-miss" style="color:var(--danger)">0</b><span>Missed</span></div>
+        <div class="stat"><b id="s-left" style="color:var(--warning)">0</b><span>Remaining</span></div>
+        <div class="stat"><b id="s-rate">0%</b><span>Session</span></div>
+      </div>
 
-  <div class="result-box" id="result-box" style="display:none">
-    <div style="font-size:14px;color:var(--text-secondary)">Session complete</div>
-    <div class="result-score" id="r-score"></div>
-    <div class="result-msg" id="r-msg"></div>
-    <div class="result-btns">
-      <button id="r-drill" style="display:none" onclick="drillMissed()"><i class="ti ti-target" aria-hidden="true"></i> Drill missed</button>
-      <button onclick="restart()"><i class="ti ti-refresh" aria-hidden="true"></i> Restart</button>
-    </div>
+      <div class="stage" id="stage" onclick="flip()" role="button" tabindex="0" aria-label="Flashcard — click to flip">
+        <div class="inner" id="card-inner">
+          <div class="face front">
+            <div class="dom" id="cd-front"></div>
+            <div class="q" id="card-q"></div>
+            <div class="hint">Click or press Space to reveal answer</div>
+          </div>
+          <div class="face back">
+            <div class="dom" id="cd-back"></div>
+            <div class="a" id="card-a"></div>
+            <div class="hint">G = Got it · M = Missed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grade" id="grade-row" style="visibility:hidden">
+        <button class="danger" onclick="grade(false)">✕ Missed</button>
+        <button class="success primary" onclick="grade(true)">✓ Got it</button>
+      </div>
+
+      <div class="nav">
+        <button onclick="prev()" aria-label="Previous card">←</button>
+        <div class="prog-wrap"><div class="prog" id="prog" style="width:0%"></div></div>
+        <div class="pos" id="pos">1 / 1</div>
+        <button onclick="next()" aria-label="Next card">→</button>
+      </div>
+
+      <div class="result" id="result-box">
+        <div style="font-size:14px;color:var(--text-secondary)">Session complete</div>
+        <div class="score" id="r-score"></div>
+        <div id="r-msg" style="color:var(--text-secondary);margin-bottom:12px"></div>
+        <button id="r-drill" style="display:none" onclick="drillMissed()">Drill missed</button>
+        <button onclick="restart()">Restart</button>
+      </div>
+    </main>
+
+    <aside class="panel">
+      <h2 class="side-title">Exam Countdown</h2>
+      <div class="countdown">
+        <div class="timebox"><b id="d-days">0</b><span>Days</span></div>
+        <div class="timebox"><b id="d-hours">0</b><span>Hours</span></div>
+        <div class="timebox"><b id="d-mins">0</b><span>Min</span></div>
+        <div class="timebox"><b id="d-secs">0</b><span>Sec</span></div>
+      </div>
+
+      <h2 class="side-title">Fast Modes</h2>
+      <div class="mode-row">
+        <button class="mode" onclick="modeExamTraps()">⚠ Exam Traps<small>Most confusing answer choices.</small></button>
+        <button class="mode" onclick="modePorts()">🔌 Ports Drill<small>Only ports and protocols.</small></button>
+        <button class="mode" onclick="modeWeak()">🎯 Weak Areas<small>Missed + starred cards.</small></button>
+        <button class="mode" onclick="modeLightning()">⚡ Lightning 50<small>Random 50-card sprint.</small></button>
+      </div>
+
+      <h2 class="side-title">Domain Progress</h2>
+      <div class="domain-list" id="domain-list"></div>
+
+      <h2 class="side-title" style="margin-top:14px">Weak / Starred</h2>
+      <div class="weak" id="weak-list"></div>
+      <div class="footer-note">
+        Use this site aggressively: miss cards on purpose when unsure, then drill missed cards until you hit 90%+.
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -749,22 +723,49 @@ const D = [
 ["Ports & Protocols","Secure Syslog","TCP 6514"],
 ["Ports & Protocols","HTTP Alternate","TCP 8080"]
 ];
+const EXTRA = [["Exam Traps", "Authentication vs authorization?", "Authentication proves who you are. Authorization decides what you can access."], ["Exam Traps", "OAuth vs OpenID Connect?", "OAuth is authorization/delegated access. OpenID Connect is authentication/login identity."], ["Exam Traps", "SAML vs OAuth?", "SAML is federated authentication/SSO. OAuth is authorization for delegated access."], ["Exam Traps", "IDS vs IPS?", "IDS detects and alerts. IPS detects and blocks inline."], ["Exam Traps", "SIEM vs SOAR?", "SIEM collects/correlates logs. SOAR automates response workflows."], ["Exam Traps", "Hashing vs encryption?", "Hashing is one-way integrity. Encryption is reversible confidentiality."], ["Exam Traps", "Encoding vs encryption?", "Encoding changes format, not security. Encryption protects confidentiality with a key."], ["Exam Traps", "Digital signature vs certificate?", "Signature proves integrity/authenticity. Certificate binds identity to a public key."], ["Exam Traps", "Symmetric vs asymmetric?", "Symmetric uses one shared key. Asymmetric uses public/private key pair."], ["Exam Traps", "Virus vs worm?", "Virus needs user/host action. Worm self-spreads."], ["Exam Traps", "Trojan vs worm?", "Trojan disguises itself as legitimate. Worm spreads automatically."], ["Exam Traps", "Rootkit vs bootkit?", "Rootkit hides privileged malware. Bootkit infects boot process."], ["Exam Traps", "Spyware vs adware?", "Spyware steals/monitors data. Adware displays unwanted ads."], ["Exam Traps", "XSS vs SQL injection?", "XSS attacks users/browsers. SQL injection attacks databases."], ["Exam Traps", "CSRF vs XSS?", "CSRF abuses a logged-in user's session. XSS runs attacker script in browser."], ["Exam Traps", "Tokenization vs masking?", "Tokenization replaces data with a token. Masking hides part of displayed data."], ["Exam Traps", "Data minimization vs retention?", "Minimization collects less data. Retention defines how long data is kept."], ["Exam Traps", "Anonymization vs pseudonymization?", "Anonymization is irreversible. Pseudonymization can be re-linked with extra information."], ["Exam Traps", "Policy vs standard?", "Policy is high-level intent. Standard is a specific mandatory requirement."], ["Exam Traps", "Guideline vs procedure?", "Guideline is recommended. Procedure is step-by-step required instructions."], ["Exam Traps", "Risk appetite vs threshold?", "Appetite is willingness to accept risk. Threshold is the point where action is required."], ["Exam Traps", "Risk tolerance vs appetite?", "Appetite is broad willingness. Tolerance is acceptable variation/deviation."], ["Exam Traps", "Mitigation vs avoidance?", "Mitigation reduces risk. Avoidance stops the risky activity entirely."], ["Exam Traps", "Acceptance vs transference?", "Acceptance keeps the risk. Transference shifts financial impact to another party, like insurance."], ["Exam Traps", "SLE vs ALE?", "SLE is one loss. ALE is yearly expected loss."], ["Exam Traps", "RTO vs RPO?", "RTO is maximum downtime. RPO is maximum data loss."], ["Exam Traps", "MTTR vs MTBF?", "MTTR is repair/recovery time. MTBF is average time between failures."], ["Exam Traps", "MTTF vs MTBF?", "MTTF is lifespan of non-repairable item. MTBF is reliability of repairable systems."], ["Exam Traps", "BCP vs DRP?", "BCP keeps business running. DRP restores IT systems."], ["Exam Traps", "Hot vs warm vs cold site?", "Hot is ready now. Warm has equipment but needs data/config. Cold is basic facility."], ["Exam Traps", "Full vs differential vs incremental backup?", "Full backs up everything. Differential since last full. Incremental since last backup."], ["Exam Traps", "RAID 0 vs RAID 1?", "RAID 0 stripes for speed/no fault tolerance. RAID 1 mirrors for redundancy."], ["Exam Traps", "Segmentation vs containment vs quarantine?", "Segmentation is planned separation. Containment stops spread. Quarantine isolates for cleanup."], ["Exam Traps", "NAC quarantine clue?", "Failed health check placed in remediation VLAN = quarantine."], ["Exam Traps", "Preventive vs detective vs corrective?", "Preventive stops. Detective identifies. Corrective fixes/restores."], ["Exam Traps", "Administrative vs technical vs physical?", "Administrative is policy/process. Technical is technology. Physical is locks/fences/guards."], ["Exam Traps", "Least privilege vs separation of duties?", "Least privilege limits access. Separation of duties splits critical tasks among people."], ["Exam Traps", "Job rotation vs mandatory vacation?", "Rotation changes roles. Mandatory vacation exposes fraud while someone is away."], ["Exam Traps", "MDM vs MAM?", "MDM manages whole device. MAM manages apps/data."], ["Exam Traps", "BYOD vs COPE vs CYOD vs COBO?", "BYOD personal device. COPE company device personal use allowed. CYOD choose from approved list. COBO company device business only."], ["Exam Traps", "Enterprise Wi-Fi vs PSK?", "Enterprise uses per-user auth/802.1X/RADIUS. PSK uses shared password."], ["Exam Traps", "WPA3 Personal vs Enterprise?", "Personal uses SAE. Enterprise uses 802.1X/RADIUS."], ["Exam Traps", "PEAP vs EAP-TLS?", "PEAP uses server cert/password tunnel. EAP-TLS uses client certificates and is strongest."], ["Exam Traps", "WAF vs firewall/NGFW?", "WAF protects web apps. NGFW protects network traffic with app awareness."], ["Exam Traps", "Credentialed vs uncredentialed scan?", "Credentialed logs in for deeper checks. Uncredentialed sees external view only."], ["Exam Traps", "Vulnerability scan vs pentest?", "Scan finds weaknesses. Pentest exploits safely to prove impact."], ["Exam Traps", "CVE vs CVSS vs CWE vs CCE?", "CVE identifies vulnerability. CVSS scores severity. CWE categorizes weakness type. CCE names configuration issues."], ["Exam Traps", "Threat feed vs vulnerability feed?", "Threat feed gives IOCs/TTPs/current threats. Vulnerability feed gives known software weaknesses."], ["Exam Traps", "OSINT vs internal intelligence?", "OSINT is public information. Internal intel comes from logs, SIEM, private systems."], ["Exam Traps", "NetFlow vs packet capture?", "NetFlow is metadata summary. Packet capture includes packet contents/payload."], ["Exam Traps", "Chain of custody vs legal hold?", "Chain of custody tracks evidence handling. Legal hold preserves data for litigation."], ["Exam Traps", "Containment vs eradication vs recovery?", "Containment limits damage. Eradication removes threat. Recovery restores normal operations."], ["Exam Traps", "Setup log vs Application log for Windows installer?", "Windows Installer events are typically in the Application log."], ["Exam Traps", "Event 4624 vs 4625?", "4624 successful logon. 4625 failed logon."], ["Exam Traps", "Event 4672 vs 1102?", "4672 special privileges assigned. 1102 audit log cleared."], ["Exam Traps", "chmod 755 meaning?", "Owner read/write/execute; group read/execute; others read/execute."], ["Exam Traps", "/etc/passwd vs /etc/shadow?", "passwd has account info. shadow has password hashes."], ["Exam Traps", "Self-signed certificate advantage?", "Free and quick, but not trusted/validated by public CA."], ["Exam Traps", "OCSP vs CRL?", "OCSP checks revocation in real time. CRL is a downloaded revoked certificate list."], ["Exam Traps", "CSR vs certificate?", "CSR requests a certificate. Certificate is issued/signed identity-to-key binding."], ["Exam Traps", "AV vs EDR?", "AV focuses known malware. EDR monitors endpoint behavior and response."], ["Exam Traps", "DLP vs FIM?", "DLP prevents data leakage. FIM detects unauthorized file changes."], ["Exam Traps", "Honeypot vs honeynet?", "Honeypot is one decoy system. Honeynet is a decoy network."], ["Exam Traps", "Fail open vs fail closed?", "Fail open allows traffic during failure. Fail closed blocks traffic during failure."], ["Exam Traps", "SFTP vs FTPS?", "SFTP uses SSH port 22. FTPS is FTP over TLS."], ["Exam Traps", "SaaS vs PaaS vs IaaS?", "SaaS app, PaaS platform, IaaS infrastructure."], ["Exam Traps", "Serverless/FaaS clue?", "Event-driven code without managing servers = serverless/FaaS."], ["Exam Traps", "Container vs VM?", "Container shares host kernel. VM has full guest OS."], ["Exam Traps", "VM escape vs VM sprawl?", "Escape breaks out to host. Sprawl is uncontrolled VM growth."], ["Exam Traps", "CASB vs SASE?", "CASB controls cloud app access. SASE combines networking and security in cloud."]];
+D.push(...EXTRA);
 
-let deck=[], idx=0, flipped=false, gotSet=new Set(), missSet=new Set();
+let deck=[], idx=0, flipped=false, gotSet=new Set(), missSet=new Set(), currentSource=[];
+const cardKey = c => c[0]+'|'+c[1];
+let persistent = JSON.parse(localStorage.getItem('secplusProgressV2') || '{"got":{},"miss":{},"star":{}}');
 
+function save(){localStorage.setItem('secplusProgressV2', JSON.stringify(persistent));}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function domains(){return [...new Set(D.map(c=>c[0]))].sort();}
+
+function buildSelect(){
+  const sel=document.getElementById('dom-sel');
+  const counts={}; D.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  sel.innerHTML='<option value="all">All domains ('+D.length+')</option>'+domains().map(d=>`<option value="${d}">${d} (${counts[d]})</option>`).join('');
+  document.getElementById('badge-count').textContent=D.length+' total cards · '+domains().length+' domains';
+}
+
+function getFiltered(){
+  const sel=document.getElementById('dom-sel').value;
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  let cards=sel==='all'?[...D]:D.filter(c=>c[0]===sel);
+  if(q) cards=cards.filter(c=>(c[0]+' '+c[1]+' '+c[2]).toLowerCase().includes(q));
+  return cards;
+}
 
 function load(cards){
-  deck=[...cards]; idx=0; flipped=false; gotSet=new Set(); missSet=new Set();
+  deck=[...cards]; currentSource=[...cards]; idx=0; flipped=false; gotSet=new Set(); missSet=new Set();
   document.getElementById('result-box').style.display='none';
-  document.getElementById('stage').style.display='';
+  document.getElementById('stage').style.display=deck.length?'':'none';
   document.getElementById('grade-row').style.visibility='hidden';
-  render(); updateStats();
+  render(); updateStats(); renderDomains(); renderWeak();
 }
 
 function render(){
-  if(!deck.length)return;
-  const[dom,q,a]=deck[idx];
+  if(!deck.length){
+    document.getElementById('card-q').textContent='No cards found.';
+    document.getElementById('card-a').textContent='Try another search or domain.';
+    document.getElementById('pos').textContent='0 / 0';
+    document.getElementById('prog').style.width='0%';
+    return;
+  }
+  const c=deck[idx], [dom,q,a]=c;
   document.getElementById('cd-front').textContent=dom;
   document.getElementById('cd-back').textContent=dom;
   document.getElementById('card-q').textContent=q;
@@ -775,49 +776,56 @@ function render(){
   const pct=Math.round(((idx+1)/deck.length)*100);
   document.getElementById('prog').style.width=pct+'%';
   document.getElementById('pos').textContent=(idx+1)+' / '+deck.length;
+  updateStarButton();
 }
 
 function flip(){
-  if(flipped)return;
+  if(!deck.length || flipped)return;
   document.getElementById('card-inner').classList.add('flipped');
   flipped=true;
   document.getElementById('grade-row').style.visibility='visible';
 }
 
 function grade(got){
-  if(got)gotSet.add(idx); else missSet.add(idx);
-  updateStats();
+  if(!deck.length)return;
+  const key=cardKey(deck[idx]);
+  if(got){gotSet.add(idx); persistent.got[key]=(persistent.got[key]||0)+1;}
+  else{missSet.add(idx); persistent.miss[key]=(persistent.miss[key]||0)+1;}
+  save(); updateStats(); renderDomains(); renderWeak();
   if(idx<deck.length-1){idx++;render();}else showResult();
 }
 
 function next(){if(idx<deck.length-1){idx++;render();}}
 function prev(){if(idx>0){idx--;render();}}
-
-function doShuffle(){
-  const sel=document.getElementById('dom-sel').value;
-  load(shuffle(sel==='all'?[...D]:D.filter(c=>c[0]===sel)));
-}
-
-function changeDomain(){
-  const sel=document.getElementById('dom-sel').value;
-  load(sel==='all'?[...D]:D.filter(c=>c[0]===sel));
-}
+function doShuffle(){load(shuffle(getFiltered()));}
+function changeDomain(){load(getFiltered());}
+function applyFilters(){load(getFiltered());}
+function restart(){load(currentSource.length?currentSource:getFiltered());}
 
 function drillMissed(){
   const cards=[...missSet].map(i=>deck[i]);
   if(cards.length)load(cards);
 }
-
-function restart(){changeDomain();}
-
+function toggleStar(){
+  if(!deck.length)return;
+  const key=cardKey(deck[idx]);
+  if(persistent.star[key]) delete persistent.star[key]; else persistent.star[key]=true;
+  save(); updateStarButton(); renderWeak();
+}
+function updateStarButton(){
+  if(!deck.length)return;
+  const key=cardKey(deck[idx]);
+  document.getElementById('star-btn').textContent=persistent.star[key]?'★ Starred':'☆ Star';
+}
 function updateStats(){
   document.getElementById('s-total').textContent=deck.length;
   document.getElementById('s-got').textContent=gotSet.size;
   document.getElementById('s-miss').textContent=missSet.size;
-  document.getElementById('s-left').textContent=deck.length-gotSet.size-missSet.size;
+  document.getElementById('s-left').textContent=Math.max(0,deck.length-gotSet.size-missSet.size);
+  const total=gotSet.size+missSet.size;
+  document.getElementById('s-rate').textContent=total?Math.round(gotSet.size/total*100)+'%':'0%';
   const mb=document.getElementById('btn-missed');
-  if(missSet.size>0){mb.style.display='';document.getElementById('missed-n').textContent=missSet.size;}
-  else mb.style.display='none';
+  if(missSet.size>0){mb.style.display='';document.getElementById('missed-n').textContent=missSet.size;} else mb.style.display='none';
 }
 
 function showResult(){
@@ -825,14 +833,53 @@ function showResult(){
   const pct=Math.round((gotSet.size/total)*100);
   const sc=document.getElementById('r-score');
   sc.textContent=pct+'%';
-  sc.style.color=pct>=80?'var(--text-success)':pct>=60?'var(--text-warning)':'var(--text-danger)';
-  document.getElementById('r-msg').textContent=pct>=80?'Solid — you know this material.':pct>=60?'Getting there — drill the missed ones.':'Keep going — repetition builds retention.';
+  sc.style.color=pct>=85?'var(--success)':pct>=70?'var(--warning)':'var(--danger)';
+  document.getElementById('r-msg').textContent=pct>=85?'Exam-ready performance. Keep drilling weak cards.':pct>=70?'Close — review missed cards immediately.':'Do not panic. Drill missed cards and repeat.';
   document.getElementById('r-drill').style.display=missSet.size>0?'':'none';
   document.getElementById('stage').style.display='none';
   document.getElementById('grade-row').style.visibility='hidden';
   document.getElementById('result-box').style.display='block';
 }
 
+function modeExamTraps(){document.getElementById('dom-sel').value='Exam Traps';document.getElementById('search').value='';load(shuffle(D.filter(c=>c[0]==='Exam Traps')));}
+function modePorts(){document.getElementById('dom-sel').value='Ports & Protocols';document.getElementById('search').value='';load(shuffle(D.filter(c=>c[0]==='Ports & Protocols')));}
+function modeLightning(){document.getElementById('dom-sel').value='all';document.getElementById('search').value='';load(shuffle([...D]).slice(0,50));}
+function modeWeak(){
+  const keys=new Set([...Object.keys(persistent.miss),...Object.keys(persistent.star)]);
+  const cards=D.filter(c=>keys.has(cardKey(c)));
+  load(shuffle(cards.length?cards:[...D].filter(c=>c[0]==='Exam Traps').slice(0,50)));
+}
+
+function renderDomains(){
+  const box=document.getElementById('domain-list');
+  const groups=domains().map(d=>{
+    const cards=D.filter(c=>c[0]===d);
+    let score=0, seen=0;
+    cards.forEach(c=>{const k=cardKey(c); const g=persistent.got[k]||0, m=persistent.miss[k]||0; if(g+m){seen++; score+=g/(g+m);}});
+    const pct=seen?Math.round(score/seen*100):0;
+    return [d,pct,cards.length];
+  });
+  box.innerHTML=groups.map(([d,pct,n])=>`<div class="domain-line"><span title="${d}">${d.length>18?d.slice(0,17)+'…':d}</span><div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div>`).join('');
+}
+
+function renderWeak(){
+  const box=document.getElementById('weak-list');
+  const weak=D.filter(c=>persistent.star[cardKey(c)] || (persistent.miss[cardKey(c)]||0)>(persistent.got[cardKey(c)]||0)).slice(0,16);
+  box.innerHTML=weak.length?weak.map(c=>`<span class="chip">${c[1].replace(/</g,'&lt;').slice(0,38)}${c[1].length>38?'…':''}</span>`).join(''):'<span class="chip">No weak cards yet — start drilling.</span>';
+}
+
+function countdown(){
+  const target=new Date('2026-07-09T09:00:00-04:00').getTime();
+  const now=Date.now(); let diff=Math.max(0,target-now);
+  const d=Math.floor(diff/86400000); diff%=86400000;
+  const h=Math.floor(diff/3600000); diff%=3600000;
+  const m=Math.floor(diff/60000); diff%=60000;
+  const s=Math.floor(diff/1000);
+  document.getElementById('d-days').textContent=d;
+  document.getElementById('d-hours').textContent=h;
+  document.getElementById('d-mins').textContent=m;
+  document.getElementById('d-secs').textContent=s;
+}
 document.addEventListener('keydown',e=>{
   if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
   if(e.key===' '){e.preventDefault();flip();}
@@ -840,7 +887,13 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowLeft')prev();
   else if((e.key==='g'||e.key==='G')&&flipped)grade(true);
   else if((e.key==='m'||e.key==='M')&&flipped)grade(false);
+  else if((e.key==='s'||e.key==='S'))toggleStar();
 });
 
+buildSelect();
 load([...D]);
+countdown();
+setInterval(countdown,1000);
 </script>
+</body>
+</html>
